@@ -1,0 +1,32 @@
+{
+  "name": "lottery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "start": "gulp dev",
+    "build": "gulp build --config gulpfile-build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.22.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.0.0",
+    "gulp-babel": "^7.0.0",
+    "gulp-clean": "^0.3.2",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-file-include": "^2.0.0",
+    "gulp-htmlmin": "^4.0.0",
+    "gulp-imagemin": "^4.0.0",
+    "gulp-jsmin": "^0.1.5",
+    "gulp-rev": "^8.1.1",
+    "gulp-rev-collector": "^1.2.3",
+    "gulp-rev-css-url": "^0.1.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-sequence": "^0.4.6"
+  }
+}
