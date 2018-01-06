@@ -4,14 +4,19 @@ var autoprefixer = require('gulp-autoprefixer');
 var include = require('gulp-file-include');
 var gulpSequence = require('gulp-sequence');
 var clean = require('gulp-clean');
+
 //转码
 var sass = require('gulp-sass');
 var babel = require('gulp-babel');
-//压缩
+var css_base64 = require('gulp-css-base64');
+var html_base64 = require('gulp-img64-2');
+
+//压缩优化
 var minifyHtml = require('gulp-htmlmin');
 var minifyImage = require('gulp-imagemin');
 var minifyJs = require('gulp-jsmin');
 var minifyCss = require('gulp-clean-css');
+
 //版本控制
 var rev = require('gulp-rev');
 var revCollector = require('gulp-rev-collector');
@@ -24,8 +29,7 @@ var srcPath = {
   root: 'src',
   html: 'src/**/*.html',
   images: 'src/images/*',
-  scss: 'src/scss/*.scss',
-  css: 'src/css/*.css',
+  css: 'src/css/*.scss',
   js: 'src/js/*.js',
 },
 distPath = {
@@ -40,7 +44,10 @@ distPath = {
 //生产环境
 //css处理
 gulp.task('css-dist', () => {
-  return gulp.src([distPath.manifest, srcPath.scss])
+  return gulp.src([distPath.manifest, srcPath.css])
+  .pipe(css_base64({
+    maxWeightResource: 8 * 1024,    
+  }))
   .pipe(revCollector())
   .pipe(sass())
   .pipe(autoprefixer({
@@ -56,9 +63,9 @@ gulp.task('css-dist', () => {
 //js处理
 gulp.task('js-dist', ()=>{
   return gulp.src(srcPath.js)
-  .pipe(babel({
-    presets: ['env'],
-  }))
+  // .pipe(babel({
+  //   presets: ['env'],
+  // }))
   .pipe(minifyJs())
   .pipe(rev())
   .pipe(gulp.dest(distPath.js))
@@ -77,7 +84,12 @@ gulp.task('images-dist', ()=>{
 //html 处理
 gulp.task('html-dist', ()=>{
   return gulp.src([distPath.manifest, srcPath.html])
+  .pipe(html_base64({
+    maxWeightResource: 8 * 1024,
+  }))
   .pipe(revCollector())
+  .pipe(include({
+  }))
   .pipe(minifyHtml())
   .pipe(gulp.dest(distPath.html))
 })
@@ -85,17 +97,21 @@ gulp.task('html-dist', ()=>{
 //开发环境
 //css处理
 gulp.task('css-dev', () => {
-  return gulp.src([srcPath.scss])
+  return gulp.src([srcPath.css])
   .pipe(sass())
+  .pipe(autoprefixer({
+    browsers: ['last 2 versions'],
+    cascade: false,
+  }))
   .pipe(gulp.dest(distPath.css))
   .pipe(reload({stream: true}))
 })
 //js处理
 gulp.task('js-dev', ()=>{
   return gulp.src(srcPath.js)
-  .pipe(babel({
-    presets: ['env'],
-  }))
+  // .pipe(babel({
+  //   presets: ['env'],
+  // }))
   .pipe(gulp.dest(distPath.js))
   .pipe(reload({stream: true}))
 
@@ -110,6 +126,8 @@ gulp.task('images-dev', ()=>{
 //html 处理
 gulp.task('html-dev', ()=>{
   return gulp.src([srcPath.html])
+  .pipe(include({
+  }))
   .pipe(gulp.dest(distPath.html))
   .pipe(reload({stream: true}))
 
@@ -134,8 +152,8 @@ gulp.task('build', gulpSequence('clean', 'images-dist', ['js-dist', 'css-dist'],
 // dev
 gulp.task('dev', (cb)=>{
   gulpSequence('clean', ['css-dev','images-dev', 'js-dev', 'html-dev'], 'browserSync')(cb);
-  gulp.watch(srcPath.scss, ['css-dev']);
-  gulp.watch(srcPath.html, ['html-dev']);
+  gulp.watch([srcPath.css, 'src/public/include/**/*.scss'], ['css-dev']);
+  gulp.watch([srcPath.html, 'src/public/include/**/*.html'], ['html-dev']);
   gulp.watch(srcPath.js, ['js-dev']);
   gulp.watch(srcPath.images, ['images-dev']);
 })
