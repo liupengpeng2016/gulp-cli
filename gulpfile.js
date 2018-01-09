@@ -39,7 +39,7 @@ distPath = {
   css: 'dist/css',
   js: 'dist/js',
   library: 'dist/library',
-  manifest: 'dist/**/*.json',
+  manifest: 'dist/manifest.json',
 };
 //插件库处理
 gulp.task('library', ()=> {
@@ -55,8 +55,12 @@ gulp.task('css-dist', () => {
   .pipe(rev())
   .pipe(delOriginal())
   .pipe(gulp.dest( distPath.css))
-  .pipe(rev.manifest())
-  .pipe(gulp.dest( distPath.css))
+  .pipe(rev.manifest('manifest.json', {
+    //base: 'dist',
+    merge: true,
+
+  }))
+  .pipe(gulp.dest(distPath.root))
 })
 gulp.task('css-compile', () => {
   return gulp.src(srcPath.css)
@@ -80,8 +84,11 @@ gulp.task('js-dist', ()=>{
   .pipe(minifyJs())
   .pipe(rev())
   .pipe(gulp.dest(distPath.js))
-  .pipe(rev.manifest())
-  .pipe(gulp.dest(distPath.js))
+  .pipe(rev.manifest('manifest.json', {
+    //base: 'dist',
+    merge: true,
+  }))
+  .pipe(gulp.dest(distPath.root))
 })
 //image 处理
 gulp.task('images-dist', ()=>{
@@ -89,8 +96,11 @@ gulp.task('images-dist', ()=>{
   .pipe(minifyImage())
   .pipe(rev())
   .pipe(gulp.dest(distPath.images))
-  .pipe(rev.manifest())
-  .pipe(gulp.dest(distPath.images))
+  .pipe(rev.manifest('manifest.json', {
+    //base: 'dist',
+    merge: true,
+  }))
+  .pipe(gulp.dest(distPath.root))
 })
 //html 处理
 gulp.task('html-dist', ()=>{
@@ -109,20 +119,12 @@ gulp.task('html-dist', ()=>{
 gulp.task('css-dev', () => {
   return gulp.src(srcPath.css)
   .pipe(sass())
-  .pipe(autoprefixer({
-    browsers: ['last 2 versions'],
-    cascade: false,
-  }))
-  .pipe(hashSrc({build_dir: "./dist/css", src_path: "./src/css"}))
   .pipe(gulp.dest(distPath.css))
   .pipe(reload({stream: true}))
 })
 //js处理
 gulp.task('js-dev', ()=>{
   return gulp.src(srcPath.js)
-  // .pipe(babel({
-  //   presets: ['env'],
-  // }))
   .pipe(gulp.dest(distPath.js))
   .pipe(reload({stream: true}))
 
@@ -166,7 +168,7 @@ gulp.task('check-dist', ()=>{
   })
 })
 // build
-gulp.task('build', gulpSequence('clean', ['images-dist', 'js-dist', 'library'], 'css-compile', 'css-dist', 'html-dist'));
+gulp.task('build', gulpSequence('clean', 'images-dist', ['js-dist', 'library'], 'css-compile', 'css-dist', 'html-dist'));
 // dev
 gulp.task('dev', (cb)=>{
   gulpSequence('clean', ['library', 'css-dev','images-dev', 'js-dev', 'html-dev'], 'browserSync')(cb);
