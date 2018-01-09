@@ -1,15 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-  <script src='./js/viewport.js'></script>
+  <script src='library/viewport.min.js'></script>
   <title>Document</title>
+  <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/index.css">
 </head>
-<body>dfgfdgdf
-<script src='js/index.js'></script>
-<img src="images/234.jpg" alt="">
-<img src="images/123.jpg" alt="">
+<body>
+  <!--banner start-->
+  <div class="banner" id='banner'>
+    <div class="banner-rules">
+      <span class='rules-icon'></span>
+      <a href="javascript:;" id='rules'>规则</a>
+    </div>
+    <a href="./html/myprize.html" class="banner-prize"></a>
+  </div>
+  <p class="prize-count">
+    <span>今日抽奖次数：<span class='prize-count-num' id='prize-count'>8</span>次</span>
+  </p>
+  <!-- dial start-->
+  <div class="dial" id='dial'>
+    <div class="dial-loop">
+    </div>
+    <div class="dial-prize dial-prize-rotate">
+    </div>
+    <div class="dial-redpacket-tl">
+    </div>
+    <div class="dial-redpacket-tr">
+    </div>
+    <div class="dial-redpacket-bl">
+    </div>
+    <div class="dial-redpacket-br">
+    </div>
+    <div class="dial-click-btn">
+    </div>
+    <div class="dial-circle"></div>
+    <div class="dial-hand">
+    </div>
+  </div>
+  <div class="cover hide" id='cover'></div>
+  <!--layers-->
+  @@include('include/layer-one/layer-one.html')
+  @@include('include/layer-two/layer-two.html')
+  @@include('include/layer-notimes/layer-notimes.html')
+  @@include('include/layer-nonetwork/layer-nonetwork.html')
+  @@include('include/layer-rules/layer-rules.html')
+  <script src='library/zepto.min.js'></script>
+  <script src='library/fastclick.js'></script>
+  <script src='js/index.js'></script>
 </body>
 </html>

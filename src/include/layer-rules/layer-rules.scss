@@ -1,0 +1,104 @@
+%rules-font{
+  font:{
+    size:px(40);
+    family:MicrosoftYaHei;
+  }
+  color:rgb(128,128,128);
+  line-height: px(56);
+}
+
+.layer-rules{
+  position:fixed;
+  top:0;
+  left:0;
+  background: rgba(0,0,0,0.6);
+  width:100%;
+  height:100%;
+}
+.layer-rules-container{
+  border-radius:px(30);
+  background: white;
+  position: absolute;
+  width:px(984);
+  height:px(1200);
+  // top:px(230);
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  margin:auto;
+  padding:px(120) px(60);
+}
+.rules-title{
+  position:absolute;
+  width:px(488);
+  height:px(106);
+  left:0;
+  right:0;
+  margin:0 auto;
+  top:px(-68);
+  background: url(../images/rules-title.png) no-repeat center;
+  background-size: 100% 100%;
+  text-align: center;
+  font:{
+    size:px(60);
+    family:SourceHanSansCN;
+  }
+  color:white;
+  padding:{
+    top:px(16);
+  }
+}
+.layer-rules-close{
+  width:px(90);
+  height:px(90);
+  position: absolute;
+  top:px(30);
+  right:px(30);
+}
+.rules-text{
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+  &::-webkit-scrollbar:vertical {
+    width: 12px;
+  }
+  &::-webkit-scrollbar:horizontal {
+    height: 12px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, .3);
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #ffffff;
+  }
+  height:px(960);
+  overflow-y: scroll;
+  &>p{
+    @extend %rules-font;
+  }
+  &>h3{
+    @extend %rules-font;
+    color:rgb(255,113,113);
+    display: flex;
+    align-items: center;
+    margin:{
+      top:px(50);
+    }
+    font-family:bold;
+    &:before{
+      content:'';
+      display:inline-block;
+      width:px(20);
+      height:px(20);
+      border-radius:50%;
+      background: rgb(255,113,113);
+      margin:{
+        right:px(18);
+      }
+    }
+  }
+}

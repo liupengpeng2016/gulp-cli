@@ -9,7 +9,6 @@ var clean = require('gulp-clean');
 var sass = require('gulp-sass');
 var babel = require('gulp-babel');
 var css_base64 = require('gulp-css-base64');
-var html_base64 = require('gulp-img64-2');
 
 //压缩优化
 var minifyHtml = require('gulp-htmlmin');
@@ -20,17 +19,18 @@ var minifyCss = require('gulp-clean-css');
 //版本控制
 var rev = require('gulp-rev');
 var revCollector = require('gulp-rev-collector');
-var revUrl = require('gulp-rev-css-url');
+var delOriginal = require('gulp-rev-delete-original');
 //localhost
 var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
 //路径定义
 var srcPath = {
   root: 'src',
-  html: 'src/**/*.html',
+  html: ['src/**/*.html', '!src/include/**/*.html'],
   images: 'src/images/*',
   css: 'src/css/*.scss',
   js: 'src/js/*.js',
+  library: 'src/library/*.js'
 },
 distPath = {
   root: 'dist',
@@ -38,34 +38,45 @@ distPath = {
   images: 'dist/images',
   css: 'dist/css',
   js: 'dist/js',
+  library: 'dist/library',
   manifest: 'dist/**/*.json',
 };
+//插件库处理
+gulp.task('library', ()=> {
+  return gulp.src(srcPath.library)
+  .pipe(gulp.dest(distPath.library));
+})
 
 //生产环境
 //css处理
 gulp.task('css-dist', () => {
-  return gulp.src([distPath.manifest, srcPath.css])
-  .pipe(css_base64({
-    maxWeightResource: 8 * 1024,    
-  }))
+  return gulp.src([distPath.manifest, distPath.css + '/*.css'])
   .pipe(revCollector())
+  .pipe(rev())
+  .pipe(delOriginal())
+  .pipe(gulp.dest( distPath.css))
+  .pipe(rev.manifest())
+  .pipe(gulp.dest( distPath.css))
+})
+gulp.task('css-compile', () => {
+  return gulp.src(srcPath.css)
+  .pipe(css_base64({
+    maxWeightResource: 8 * 1024,
+  }))
   .pipe(sass())
   .pipe(autoprefixer({
     browsers: ['last 2 versions'],
     cascade: false,
   }))
   .pipe(minifyCss())
-  .pipe(rev())
-  .pipe(gulp.dest(distPath.css))
-  .pipe(rev.manifest())
   .pipe(gulp.dest(distPath.css))
 })
 //js处理
 gulp.task('js-dist', ()=>{
   return gulp.src(srcPath.js)
-  // .pipe(babel({
-  //   presets: ['env'],
-  // }))
+  .pipe(babel({
+    presets: ['env'],
+  }))
   .pipe(minifyJs())
   .pipe(rev())
   .pipe(gulp.dest(distPath.js))
@@ -83,26 +94,26 @@ gulp.task('images-dist', ()=>{
 })
 //html 处理
 gulp.task('html-dist', ()=>{
-  return gulp.src([distPath.manifest, srcPath.html])
-  .pipe(html_base64({
-    maxWeightResource: 8 * 1024,
-  }))
-  .pipe(revCollector())
+  return gulp.src([distPath.manifest, ...srcPath.html])
   .pipe(include({
   }))
-  .pipe(minifyHtml())
+  .pipe(revCollector())
+  .pipe(minifyHtml({
+    collapseWhitespace: true,
+  }))
   .pipe(gulp.dest(distPath.html))
 })
 
 //开发环境
 //css处理
 gulp.task('css-dev', () => {
-  return gulp.src([srcPath.css])
+  return gulp.src(srcPath.css)
   .pipe(sass())
   .pipe(autoprefixer({
     browsers: ['last 2 versions'],
     cascade: false,
   }))
+  .pipe(hashSrc({build_dir: "./dist/css", src_path: "./src/css"}))
   .pipe(gulp.dest(distPath.css))
   .pipe(reload({stream: true}))
 })
@@ -125,12 +136,11 @@ gulp.task('images-dev', ()=>{
 })
 //html 处理
 gulp.task('html-dev', ()=>{
-  return gulp.src([srcPath.html])
+  return gulp.src(srcPath.html)
   .pipe(include({
   }))
   .pipe(gulp.dest(distPath.html))
   .pipe(reload({stream: true}))
-
 })
 
 //清除dist目录
@@ -147,13 +157,21 @@ gulp.task('browserSync', ()=>{
     }
   })
 })
+gulp.task('check-dist', ()=>{
+  browserSync.init({
+    server: {
+      baseDir: './dist',
+      //proxy: 'ip地址',
+    }
+  })
+})
 // build
-gulp.task('build', gulpSequence('clean', 'images-dist', ['js-dist', 'css-dist'], 'html-dist'));
+gulp.task('build', gulpSequence('clean', ['images-dist', 'js-dist', 'library'], 'css-compile', 'css-dist', 'html-dist'));
 // dev
 gulp.task('dev', (cb)=>{
-  gulpSequence('clean', ['css-dev','images-dev', 'js-dev', 'html-dev'], 'browserSync')(cb);
-  gulp.watch([srcPath.css, 'src/public/include/**/*.scss'], ['css-dev']);
-  gulp.watch([srcPath.html, 'src/public/include/**/*.html'], ['html-dev']);
+  gulpSequence('clean', ['library', 'css-dev','images-dev', 'js-dev', 'html-dev'], 'browserSync')(cb);
+  gulp.watch('src/**/*.scss', ['css-dev']);
+  gulp.watch('src/**/*.html', ['html-dev']);
   gulp.watch(srcPath.js, ['js-dev']);
   gulp.watch(srcPath.images, ['images-dev']);
 })

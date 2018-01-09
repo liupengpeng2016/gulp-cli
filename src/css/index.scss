@@ -1,5 +1,259 @@
-@import '../public/css/convertToRem.scss';
+@import '../rem-layout/convertToRem.scss';
+@import '../include/layer-one/layer-one.scss';
+@import '../include/layer-two/layer-two.scss';
+@import '../include/layer-nonetwork/layer-nonetwork.scss';
+@import '../include/layer-notimes/layer-notimes.scss';
+@import '../include/layer-rules/layer-rules.scss';
+*{
+  box-sizing: border-box;
+}
+
 body{
-  font-size: medium;
-  background: pink url(../images/123.jpg);
+  font:{
+    family:MicrosoftYaHei;
+  }
+  background: #f7d041;
+  touch-action:manipulation;
+}
+
+//banner
+.banner{
+  height:px(420);
+  background: #aaa url(../images/banner.png) no-repeat  center;
+  background-size: 100% 100%;
+  margin:{
+    bottom:px(40);
+  }
+}
+.banner-prize{
+  float:right;
+  width:px(180);
+  height:px(180);
+  background:url(../images/my-prize.png) no-repeat center;
+  background-size:contain;
+}
+
+.banner-rules{
+  width:px(154);
+  height:px(64);
+  margin:{
+    top:px(20);
+  }
+  float:left;
+  color:white;
+  line-height: px(64);
+  text-align: center;
+  border-top-right-radius: px(32);
+  border-bottom-right-radius: px(32);
+  background:rgba(25,25,25,0.6);
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  a{
+    font:{
+      size:px(32);
+      family:MicrosoftYaHei;
+    }
+    color:white;
+    text-decoration: none;
+    padding:{
+      left:px(10);
+      right:px(10);
+    }
+  }
+}
+.rules-icon{
+  display:inline-block;
+  width:px(32);
+  height:100%;
+  background:url(../images/notice-icon.png) no-repeat center;
+  background-size: 100%;
+  vertical-align: baseline;
+}
+.prize-count{
+  width:px(438);
+  height:px(96);
+  border:px(8) solid rgb(247,78,65);
+  text-align: center;
+  line-height: px(80);
+  margin:0 auto;
+  border-radius:px(48);
+  background: rgb(255,242,182);
+
+  font:{
+    size:px(38);
+  }
+  color:rgb(232,28,29);
+}
+.prize-count-num{
+  font:{
+    size:px(43);
+  }
+  vertical-align: bottom;
+}
+
+//dial
+.dial{
+  position:absolute;
+  width:100%;
+  top:px(606);
+  left:0;
+}
+@mixin dial-img($img-url){
+  background: url(#{$img-url}) no-repeat center;
+  background-size: 100%;
+}
+// @keyframes loop-rotating {
+//   0%{
+//     background-image: url('../images/loop1.png');
+//   }
+//   50%{
+//     background-image: url('../images/loop2.png');
+//   }
+// }
+.dial-loop{
+  width:px(980);
+  margin:{
+    left:px(48);
+  }
+  height:px(980);
+  background:url(../images/loop.png) no-repeat left center;
+  background-size: 200%;
+  //@include dial-img('../images/loop.png');
+  //animation: loop-rotating 1s linear infinite;
+}
+.dial-loop-active{
+  background-position: px(-980) center;
+}
+
+.dial-click-btn{
+  position:absolute;
+  width:px(330);
+  height:px(380);
+  top:px(270);
+  left:px(380);
+  @include dial-img('../images/btn.png');
+}
+.dial-click-btn-active{
+  background-image:url('../images/btn-clicked.png');
+}
+@keyframes prize-rotating {
+  0%{
+    transform:rotate(0deg);
+  }
+  100%{
+    transform:rotate(360deg);
+  }
+}
+.dial-prize{
+  position:absolute;
+  width:px(912);
+  height:px(912);
+  top:px(32);
+  left:px(80);
+  @include dial-img('../images/dial.png');
+}
+.dial-prize-rotate{
+  animation:prize-rotating 30s linear infinite;
+}
+@keyframes circle-scale{
+  0% {
+    transform:scale(0);
+  }
+  20%{
+    transform:scale(0);
+  }
+  60%{
+    transform:scale(1);
+    opacity:1;
+  }
+  100%{
+    transform:scale(1);
+    opacity:0;
+
+  }
+}
+.dial-circle{
+  width:px(104);
+  height:px(104);
+  position:absolute;
+  top:px(460);
+  left:px(560);
+  animation:circle-scale 1s linear infinite;
+  @include dial-img('../images/circle.png');
+}
+@keyframes shake-hand {
+  0%{
+    transform:rotate(0deg);
+  }
+  50%{
+    transform:rotate(-15deg);
+  }
+  100%{
+    transform:rotate(0deg);
+  }
+}
+.dial-hand{
+  position:absolute;
+  width:px(329);
+  height:px(300);
+  top:px(410);
+  left:px(580);
+  animation:shake-hand 1s ease infinite;
+  //transform-origin: 70% 60%;
+  transform-origin: 85% 85%;
+  @include dial-img('../images/hand.png');
+}
+.dial-hand-active{
+  background-image:url('../images/hand-clicked.png');
+}
+.dial-redpacket-tl{
+  position:absolute;
+  width:px(136);
+  height:px(132);
+  top:px(-12);
+  left:px(50);
+  @include dial-img('../images/redpacket-tl.png');
+}
+.dial-redpacket-tr{
+  position:absolute;
+  width:px(132);
+  height:px(160);
+  top:px(-84);
+  right:0;
+  @include dial-img('../images/redpacket-tr.png');
+}
+.dial-redpacket-bl{
+  position:absolute;
+  width:px(134);
+  height:px(134);
+  bottom:px(-18);
+  left:px(104);
+  @include dial-img('../images/redpacket-bl.png');
+
+}
+.dial-redpacket-br{
+  position:absolute;
+  width:px(162);
+  height:px(154);
+  bottom:px(-36);
+  right:px(90);
+  @include dial-img('../images/redpacket-br.png');
+}
+
+.scale-1{
+  transition:transform 0.6s;
+  transform: scale(1);
+}
+.scale-0{
+  transform: scale(0);
+  transform-origin:96% 4%;
+}
+.cover{
+  position:fixed;
+  top:0;
+  left:0;
+  background: rgba(0,0,0,0.6);
+  width:100%;
+  height:100%;
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <script src='../library/viewport.min.js'></script>
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/myprize.css">
+</head>
+<body>
+  <ul class="myprize-list" id='myprize-list'>
+  </ul>
+  <div class="empty-list-notice hide">
+    <img src="../images/empty-img.png" alt="">
+    <p>您没有可用奖品哦~</p>
+  </div>
+  <script type='text/html' id='myprize-list-item'>
+    {{each list}}
+    <li class="myprize-list-item">
+      <a href="{{$value.url}}">
+        <img src="{{$value.attachlist[0]}}" alt="">
+        <div>
+          <h3>{{$value.name}}</h3>
+          <p>{{$value.timeNotice ? $value.timeNotice : '有效期至:' + $imports.slice($value.activityEnd, 10) || ''}}</p>
+        </div>
+      </a>
+    </li>
+    {{/each}}
+  </script>
+  <script src='../library/zepto.min.js'></script>
+  <script src='../library/template-web.js'></script>
+  <script src='../js/myprize.js'></script>
+</body>
+</html>

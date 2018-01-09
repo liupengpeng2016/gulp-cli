@@ -1,0 +1,35 @@
+.layer-notimes-container{
+  width:px(750);
+  height:px(480);
+  background: white;
+  border-radius:px(30);
+  position:absolute;
+  top:0;
+  bottom:0;
+  margin: auto 0;
+  left:px(164);
+}
+.layer-notimes-close{
+  width:px(90);
+  height:px(90);
+  position:absolute;
+  top:px(-45);
+  right:px(-45);
+}
+.layer-notimes-img{
+  width:px(152);
+  height:px(152);
+  display:block;
+  margin:px(76) auto px(58);
+}
+.layer-notimes-title,.layer-notimes-subtitle{
+  font:{
+    size:px(42);
+    family:SourceHanSansCN;
+  }
+  color:rgb(51,51,51);
+  text-align: center;
+  margin:{
+    bottom:px(24);
+  }
+}

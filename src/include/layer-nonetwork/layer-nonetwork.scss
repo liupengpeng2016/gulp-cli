@@ -1,0 +1,61 @@
+.layer-nonetwork-container{
+  width:px(750);
+  height:px(750);
+  background: white;
+  border-radius:px(30);
+  position:absolute;
+  top:px(384);
+  left:px(164);
+}
+.layer-nonetwork-title{
+  font:{
+    family:SourceHanSansCN;
+    size:px(60);
+  }
+  color:rgb(244,81,81);
+  text-align: center;
+  margin:{
+    top:px(86);
+    bottom:px(26);
+  }
+}
+.layer-nonetwork-subtitle{
+  font:{
+    family:SourceHanSansCN;
+    size:px(42);
+  }
+  margin:{
+    bottom:px(48);
+  }
+  color:rgb(51,51,51);
+  text-align: center;
+}
+.layer-nonetwork-img{
+  width:px(222);
+  height:px(266);
+  display:block;
+  margin:0 auto px(30);
+}
+.layer-nonetwork-btn{
+  display:block;
+  width:px(600);
+  height:px(120);
+  margin: 0 auto;
+  border-radius:px(60);
+  background:rgb(244,81,81);
+  color:white;
+  text-align: center;
+  line-height: px(120);
+  text-decoration: none;
+  font:{
+    family:SourceHanSansCN;
+    size:px(54);
+  }
+}
+.layer-nonetwork-close{
+  width:px(90);
+  height:px(90);
+  position:absolute;
+  top:px(-45);
+  right:px(-45);
+}
