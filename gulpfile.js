@@ -39,11 +39,12 @@ distPath = {
   css: 'dist/css',
   js: 'dist/js',
   library: 'dist/library',
-  manifest: 'dist/manifest.json',
+  manifest: 'dist/**/*.json',
 };
 //插件库处理
 gulp.task('library', ()=> {
   return gulp.src(srcPath.library)
+  .pipe(minifyJs())
   .pipe(gulp.dest(distPath.library));
 })
 
@@ -55,12 +56,8 @@ gulp.task('css-dist', () => {
   .pipe(rev())
   .pipe(delOriginal())
   .pipe(gulp.dest( distPath.css))
-  .pipe(rev.manifest('manifest.json', {
-    //base: 'dist',
-    merge: true,
-
-  }))
-  .pipe(gulp.dest(distPath.root))
+  .pipe(rev.manifest())
+  .pipe(gulp.dest( distPath.css))
 })
 gulp.task('css-compile', () => {
   return gulp.src(srcPath.css)
@@ -84,11 +81,8 @@ gulp.task('js-dist', ()=>{
   .pipe(minifyJs())
   .pipe(rev())
   .pipe(gulp.dest(distPath.js))
-  .pipe(rev.manifest('manifest.json', {
-    //base: 'dist',
-    merge: true,
-  }))
-  .pipe(gulp.dest(distPath.root))
+  .pipe(rev.manifest())
+  .pipe(gulp.dest(distPath.js))
 })
 //image 处理
 gulp.task('images-dist', ()=>{
@@ -96,11 +90,8 @@ gulp.task('images-dist', ()=>{
   .pipe(minifyImage())
   .pipe(rev())
   .pipe(gulp.dest(distPath.images))
-  .pipe(rev.manifest('manifest.json', {
-    //base: 'dist',
-    merge: true,
-  }))
-  .pipe(gulp.dest(distPath.root))
+  .pipe(rev.manifest())
+  .pipe(gulp.dest(distPath.images))
 })
 //html 处理
 gulp.task('html-dist', ()=>{
@@ -119,16 +110,30 @@ gulp.task('html-dist', ()=>{
 gulp.task('css-dev', () => {
   return gulp.src(srcPath.css)
   .pipe(sass())
+  .pipe(autoprefixer({
+    browsers: ['last 2 versions'],
+    cascade: false,
+  }))
   .pipe(gulp.dest(distPath.css))
   .pipe(reload({stream: true}))
 })
 //js处理
 gulp.task('js-dev', ()=>{
   return gulp.src(srcPath.js)
+  // .pipe(babel({
+  //   presets: ['env'],
+  // }))
   .pipe(gulp.dest(distPath.js))
   .pipe(reload({stream: true}))
 
 })
+//library 处理
+gulp.task('library-dev', ()=>{
+  return gulp.src(srcPath.library)
+  .pipe(gulp.dest(distPath.library))
+  .pipe(reload({stream: true}))
+})
+
 //image 处理
 gulp.task('images-dev', ()=>{
   return gulp.src(srcPath.images)
@@ -150,6 +155,11 @@ gulp.task('clean', ()=>{
   return gulp.src('dist/*')
   .pipe(clean({read: false}))
 })
+//清除manifest
+gulp.task('clean-manifest', ()=>{
+  return gulp.src('dist/**/*.json')
+  .pipe(clean({read:false}))
+})
 //静态服务器
 gulp.task('browserSync', ()=>{
   browserSync.init({
@@ -168,12 +178,13 @@ gulp.task('check-dist', ()=>{
   })
 })
 // build
-gulp.task('build', gulpSequence('clean', 'images-dist', ['js-dist', 'library'], 'css-compile', 'css-dist', 'html-dist'));
+gulp.task('build', gulpSequence('clean', ['images-dist', 'js-dist', 'library'], 'css-compile', 'css-dist', 'html-dist', 'clean-manifest'));
 // dev
 gulp.task('dev', (cb)=>{
   gulpSequence('clean', ['library', 'css-dev','images-dev', 'js-dev', 'html-dev'], 'browserSync')(cb);
   gulp.watch('src/**/*.scss', ['css-dev']);
   gulp.watch('src/**/*.html', ['html-dev']);
   gulp.watch(srcPath.js, ['js-dev']);
+  gulp.watch(srcPath.library, ['library-dev']);
   gulp.watch(srcPath.images, ['images-dev']);
 })
