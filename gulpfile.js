@@ -44,7 +44,7 @@ distPath = {
 //插件库处理
 gulp.task('library', ()=> {
   return gulp.src(srcPath.library)
-  .pipe(minifyJs())
+  //.pipe(minifyJs())
   .pipe(gulp.dest(distPath.library));
 })
 
@@ -74,7 +74,8 @@ gulp.task('css-compile', () => {
 })
 //js处理
 gulp.task('js-dist', ()=>{
-  return gulp.src(srcPath.js)
+  return gulp.src([distPath.manifest, srcPath.js])
+  .pipe(revCollector())
   .pipe(babel({
     presets: ['env'],
   }))
@@ -178,7 +179,7 @@ gulp.task('check-dist', ()=>{
   })
 })
 // build
-gulp.task('build', gulpSequence('clean', ['images-dist', 'js-dist', 'library'], 'css-compile', 'css-dist', 'html-dist', 'clean-manifest'));
+gulp.task('build', gulpSequence('clean', ['images-dist', 'css-compile', 'library'], 'js-dist', 'css-dist', 'html-dist', 'clean-manifest'));
 // dev
 gulp.task('dev', (cb)=>{
   gulpSequence('clean', ['library', 'css-dev','images-dev', 'js-dev', 'html-dev'], 'browserSync')(cb);
