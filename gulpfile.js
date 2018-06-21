@@ -44,7 +44,6 @@ distPath = {
 //插件库处理
 gulp.task('library', ()=> {
   return gulp.src(srcPath.library)
-  //.pipe(minifyJs())
   .pipe(gulp.dest(distPath.library));
 })
 
@@ -74,8 +73,7 @@ gulp.task('css-compile', () => {
 })
 //js处理
 gulp.task('js-dist', ()=>{
-  return gulp.src([distPath.manifest, srcPath.js])
-  .pipe(revCollector())
+  return gulp.src(srcPath.js)
   .pipe(babel({
     presets: ['env'],
   }))
@@ -105,6 +103,46 @@ gulp.task('html-dist', ()=>{
   }))
   .pipe(gulp.dest(distPath.html))
 })
+//生产环境，不添加版本号
+//css处理
+gulp.task('css-dist-nohash', () => {
+  return gulp.src(srcPath.css)
+  .pipe(css_base64({
+    maxWeightResource: 8 * 1024,
+  }))
+  .pipe(sass())
+  .pipe(autoprefixer({
+    browsers: ['last 2 versions'],
+    cascade: false,
+  }))
+  .pipe(minifyCss())
+  .pipe(gulp.dest(distPath.css))
+})
+//js处理
+gulp.task('js-dist-nohash', ()=>{
+  return gulp.src(srcPath.js)
+  .pipe(babel({
+    presets: ['env'],
+  }))
+  .pipe(minifyJs())
+  .pipe(gulp.dest(distPath.js))
+})
+//image 处理
+gulp.task('images-dist-nohash', ()=>{
+  return gulp.src(srcPath.images)
+  .pipe(minifyImage())
+  .pipe(gulp.dest(distPath.images))
+})
+//html 处理
+gulp.task('html-dist-nohash', ()=>{
+  return gulp.src(srcPath.html)
+  .pipe(include({
+  }))
+  .pipe(minifyHtml({
+    collapseWhitespace: true,
+  }))
+  .pipe(gulp.dest(distPath.html))
+})
 
 //开发环境
 //css处理
@@ -121,12 +159,8 @@ gulp.task('css-dev', () => {
 //js处理
 gulp.task('js-dev', ()=>{
   return gulp.src(srcPath.js)
-  // .pipe(babel({
-  //   presets: ['env'],
-  // }))
   .pipe(gulp.dest(distPath.js))
   .pipe(reload({stream: true}))
-
 })
 //library 处理
 gulp.task('library-dev', ()=>{
@@ -158,8 +192,8 @@ gulp.task('clean', ()=>{
 })
 //清除manifest
 gulp.task('clean-manifest', ()=>{
-  return gulp.src('dist/**/*.json')
-  .pipe(clean({read:false}))
+  return gulp.src('dist/**/*manifest.json')
+  .pipe(clean({read: false}))
 })
 //静态服务器
 gulp.task('browserSync', ()=>{
@@ -179,7 +213,9 @@ gulp.task('check-dist', ()=>{
   })
 })
 // build
-gulp.task('build', gulpSequence('clean', ['images-dist', 'css-compile', 'library'], 'js-dist', 'css-dist', 'html-dist', 'clean-manifest'));
+gulp.task('build', gulpSequence('clean', ['images-dist', 'js-dist', 'library'], 'css-compile', 'css-dist', 'html-dist', 'clean-manifest'));
+//build-nohash
+gulp.task('build-noversion', gulpSequence('clean', ['library', 'css-dist-nohash', 'images-dist-nohash', 'js-dist-nohash', 'html-dist-nohash']));
 // dev
 gulp.task('dev', (cb)=>{
   gulpSequence('clean', ['library', 'css-dev','images-dev', 'js-dev', 'html-dev'], 'browserSync')(cb);
