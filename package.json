@@ -24,7 +24,7 @@
     "gulp-file-include": "^2.0.0",
     "gulp-htmlmin": "^4.0.0",
     "gulp-imagemin": "^4.0.0",
-    "gulp-jsmin": "^0.1.5",
+    "gulp-uglify": "*",
     "gulp-rev": "^8.1.1",
     "gulp-rev-collector": "^1.2.3",
     "gulp-rev-css-url": "^0.1.0",

@@ -13,7 +13,7 @@ var css_base64 = require('gulp-css-base64');
 //压缩优化
 var minifyHtml = require('gulp-htmlmin');
 var minifyImage = require('gulp-imagemin');
-var minifyJs = require('gulp-jsmin');
+var minifyJs = require('gulp-uglify');
 var minifyCss = require('gulp-clean-css');
 
 //版本控制
